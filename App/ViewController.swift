@@ -45,6 +45,7 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         })
         
         let devicesStr = devicesArray
+            .filter({ -$0.updateDate.timeIntervalSinceNow < 60 * 60 })
             .map({ "\($0.rssi ?? 0) | \(Int(-$0.updateDate.timeIntervalSinceNow)) | \($0.peripheral.name ?? "\($0.peripheral.identifier)")"})
             .joined(separator: "\n")
         

@@ -16,17 +16,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="labelLog" text="Detector" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sty-NF-oiW">
-                                <rect key="frame" x="10" y="74" width="63.5" height="19.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b5v-Yh-K8f">
+                                <rect key="frame" x="0.0" y="60" width="414" height="836"/>
+                                <subviews>
+                                    <view autoresizesSubviews="NO" contentMode="TopLeft" translatesAutoresizingMaskIntoConstraints="NO" id="VIe-jp-A1R">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="19.5"/>
+                                        <subviews>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="labelLog" text="Detector" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sty-NF-oiW">
+                                                <rect key="frame" x="0.0" y="0.0" width="63.5" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="sty-NF-oiW" firstAttribute="leading" secondItem="VIe-jp-A1R" secondAttribute="leading" id="FNX-Zr-aeY"/>
+                                            <constraint firstAttribute="height" secondItem="sty-NF-oiW" secondAttribute="height" id="TUn-dK-Mq8"/>
+                                            <constraint firstItem="sty-NF-oiW" firstAttribute="top" secondItem="VIe-jp-A1R" secondAttribute="top" id="rbH-Da-hfs"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="VIe-jp-A1R" firstAttribute="leading" secondItem="b5v-Yh-K8f" secondAttribute="leading" id="Sxd-y8-Den"/>
+                                    <constraint firstItem="VIe-jp-A1R" firstAttribute="top" secondItem="b5v-Yh-K8f" secondAttribute="top" id="e9l-Eg-A6V"/>
+                                    <constraint firstAttribute="trailing" secondItem="VIe-jp-A1R" secondAttribute="trailing" id="k4K-Ge-a0k"/>
+                                    <constraint firstItem="VIe-jp-A1R" firstAttribute="width" secondItem="b5v-Yh-K8f" secondAttribute="width" id="lTb-B0-FS9"/>
+                                    <constraint firstAttribute="bottom" secondItem="VIe-jp-A1R" secondAttribute="bottom" id="mPa-zc-jKs"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="30N-Hg-d9d"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="crY-OC-Lab"/>
+                            </scrollView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="sty-NF-oiW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="aIF-y4-PRK"/>
-                            <constraint firstItem="sty-NF-oiW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="gZJ-QX-Klj"/>
+                            <constraint firstItem="b5v-Yh-K8f" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="8hZ-gE-TvT"/>
+                            <constraint firstItem="b5v-Yh-K8f" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="GAb-G0-rWn"/>
+                            <constraint firstAttribute="bottom" secondItem="b5v-Yh-K8f" secondAttribute="bottom" id="tth-ec-1zq"/>
+                            <constraint firstItem="b5v-Yh-K8f" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="zLp-Ej-oHu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -36,7 +62,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="93"/>
+            <point key="canvasLocation" x="131.8840579710145" y="92.410714285714278"/>
         </scene>
     </scenes>
 </document>
