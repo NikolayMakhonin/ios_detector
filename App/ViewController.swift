@@ -13,20 +13,29 @@ class Device {
 
 import UIKit
 import CoreBluetooth
+import AVFoundation
 
 class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     private var centralManager: CBCentralManager!
     private var devices: [UUID: Device] = [:]
     private var lastScannedDate: NSDate = NSDate()
+    private var count0: Int = 0
+    private var count1: Int = 0
+    private var count2: Int = 0
     @IBOutlet weak var labelState: UILabel!
-        
+    @IBOutlet weak var labelCount0: UILabel!
+    @IBOutlet weak var labelCount1: UILabel!
+    @IBOutlet weak var labelCount2: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         centralManager = CBCentralManager(delegate: self, queue: nil)
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: updateState)
+        
+        UIApplication.shared.isIdleTimerDisabled = true
     }
     
     func updateState(timer: Timer) {
@@ -45,16 +54,38 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         })
         
         let devicesStr = devicesArray
+            .prefix(50)
             .filter({ -$0.updateDate.timeIntervalSinceNow < 60 * 60 })
             .map({ "\($0.rssi ?? 0) | \(Int(-$0.updateDate.timeIntervalSinceNow)) | \($0.peripheral.name ?? "\($0.peripheral.identifier)")"})
             .joined(separator: "\n")
         
-        labelState.text = "power\(centralManager.state == .poweredOn ? "On" : "Off") \(centralManager.isScanning ? "scanning" : "")\n\(devicesStr)"
+        labelState.text = "power\(centralManager.state == .poweredOn ? "On" : "Off") \(centralManager.isScanning ? "scanning" : "") \(devicesArray.count)\n\(devicesStr)"
         
+        let _count0 = devicesArray.filter({ -$0.updateDate.timeIntervalSinceNow <= 10 }).count
+        let _count1 = devicesArray.filter({ -$0.updateDate.timeIntervalSinceNow <= 60 * 3 }).count
+        let _count2 = devicesArray.filter({ -$0.updateDate.timeIntervalSinceNow <= 60 * 30 }).count
+        
+        labelCount0.text = "\(_count0)"
+        labelCount1.text = "\(_count1)"
+        labelCount2.text = "\(_count2)"
+
+        if (count1 < 3 && _count1 > count1) {
+            // UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            // UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+            print("vibrate")
+        }
+
+        // print("refresh: \(devicesArray.count)")
+        
+        count0 = _count0
+        count1 = _count1
+        count2 = _count2
+     
         if (centralManager.state == .poweredOn
             && (!centralManager.isScanning || -lastScannedDate.timeIntervalSinceNow > 10)) {
             lastScannedDate = NSDate()
-            centralManager.stopScan()
+            // centralManager.stopScan()
             centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
         }
     }
@@ -65,7 +96,7 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
             print("Central is not powered on")
         } else {
             print("Central scanning for ...");
-            centralManager.stopScan()
+            // centralManager.stopScan()
             central.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
         }
     }
