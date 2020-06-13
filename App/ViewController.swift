@@ -21,6 +21,8 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
 
     private var centralManager: CBCentralManager!
     private var devices: [UUID: Device] = [:]
+    private var devicesArray: [Device] = []
+    private var devicesArrayLock: Bool = false
     private var lastScannedDate: NSDate = NSDate()
     private var count0: Int = 0
     private var count1: Int = 0
@@ -41,6 +43,13 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         
         UIApplication.shared.isIdleTimerDisabled = true
         
+        labelState.isUserInteractionEnabled = true
+        
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.labelState_doubleTap))
+        doubleTap.numberOfTapsRequired = 2
+        labelState.addGestureRecognizer(doubleTap)
+
+        
         // NEHotspotConfigurationManager.shared.getConfiguredSSIDs()
         
         // let interfaces = NEHotspotHelper.supportedNetworkInterfaces()
@@ -52,21 +61,28 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         // externalAccessoryBrowser = EAWiFiUnconfiguredAccessoryBrowser(delegate: self, queue: nil)
         // externalAccessoryBrowser.startSearchingForUnconfiguredAccessories(matching: nil)
     }
+    
+    @objc func labelState_doubleTap() {
+        devicesArrayLock = !devicesArrayLock
+        print("devicesArrayLock = \(devicesArrayLock)")
+    }
        
     func updateState(timer: Timer) {
-        var devicesArray = Array(devices.values)
-        devicesArray.sort(by: {
-            if (-$0.updateDate.timeIntervalSinceNow > 10) {
-                if (-$1.updateDate.timeIntervalSinceNow > 10) {
-                    return -$0.updateDate.timeIntervalSinceNow < -$1.updateDate.timeIntervalSinceNow
+        if (!devicesArrayLock) {
+            devicesArray = Array(devices.values)
+            devicesArray.sort(by: {
+                if (-$0.updateDate.timeIntervalSinceNow > 10) {
+                    if (-$1.updateDate.timeIntervalSinceNow > 10) {
+                        return -$0.updateDate.timeIntervalSinceNow < -$1.updateDate.timeIntervalSinceNow
+                    }
+                    return false
                 }
-                return false
-            }
-            if (-$1.updateDate.timeIntervalSinceNow > 10) {
-                return true
-            }
-            return Double(truncating: $0.rssi) > Double(truncating: $1.rssi)
-        })
+                if (-$1.updateDate.timeIntervalSinceNow > 10) {
+                    return true
+                }
+                return Double(truncating: $0.rssi) > Double(truncating: $1.rssi)
+            })
+        }
         
         let devicesStr = devicesArray
             .prefix(50)
@@ -74,7 +90,7 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
             .map({ "\($0.rssi ?? 0) | \(Int(-$0.updateDate.timeIntervalSinceNow)) | \($0.peripheral.name ?? "\($0.peripheral.identifier)")"})
             .joined(separator: "\n")
         
-        labelState.text = "power\(centralManager.state == .poweredOn ? "On" : "Off") \(centralManager.isScanning ? "scanning" : "") \(devicesArray.count)\n\(devicesStr)"
+        labelState.text = "power\(centralManager.state == .poweredOn ? "On" : "Off") | \(centralManager.isScanning ? "scanning" : "") | \(devicesArray.count) | \(devicesArrayLock ? "lock" : "")\n\(devicesStr)"
         
         let _count0 = devicesArray.filter({ -$0.updateDate.timeIntervalSinceNow <= 10 }).count
         let _count1 = devicesArray.filter({ -$0.updateDate.timeIntervalSinceNow <= 60 * 3 }).count
