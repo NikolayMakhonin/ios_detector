@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8440022724949A6C00BB6C2B /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8440022624949A6C00BB6C2B /* ExternalAccessory.framework */; };
+		8440022924949ECE00BB6C2B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8440022824949ECE00BB6C2B /* NetworkExtension.framework */; };
 		D4CCE9921FC13884003FA1BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CCE9911FC13884003FA1BA /* AppDelegate.swift */; };
 		D4CCE9941FC13884003FA1BA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CCE9931FC13884003FA1BA /* ViewController.swift */; };
 		D4CCE9971FC13884003FA1BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4CCE9951FC13884003FA1BA /* Main.storyboard */; };
@@ -15,6 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8440022424949A6B00BB6C2B /* Detector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Detector.entitlements; sourceTree = "<group>"; };
+		8440022624949A6C00BB6C2B /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		8440022824949ECE00BB6C2B /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		D4CCE98E1FC13884003FA1BA /* Detector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Detector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4CCE9911FC13884003FA1BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D4CCE9931FC13884003FA1BA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -29,17 +34,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8440022724949A6C00BB6C2B /* ExternalAccessory.framework in Frameworks */,
+				8440022924949ECE00BB6C2B /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8440022524949A6C00BB6C2B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8440022824949ECE00BB6C2B /* NetworkExtension.framework */,
+				8440022624949A6C00BB6C2B /* ExternalAccessory.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D4CCE9851FC13884003FA1BA = {
 			isa = PBXGroup;
 			children = (
+				8440022424949A6B00BB6C2B /* Detector.entitlements */,
 				D4CCE9901FC13884003FA1BA /* App */,
 				D4CCE98F1FC13884003FA1BA /* Products */,
+				8440022524949A6C00BB6C2B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -279,6 +297,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Detector.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SATR67C345;
 				INFOPLIST_FILE = App/Info.plist;
@@ -286,6 +306,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = my.organization.detector;
 				PRODUCT_NAME = Detector;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -295,6 +316,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Detector.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SATR67C345;
 				INFOPLIST_FILE = App/Info.plist;
@@ -302,6 +325,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = my.organization.detector;
 				PRODUCT_NAME = Detector;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

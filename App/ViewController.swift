@@ -14,8 +14,10 @@ class Device {
 import UIKit
 import CoreBluetooth
 import AVFoundation
+// import NetworkExtension
+import ExternalAccessory
 
-class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDelegate {
+class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDelegate, EAWiFiUnconfiguredAccessoryBrowserDelegate {
 
     private var centralManager: CBCentralManager!
     private var devices: [UUID: Device] = [:]
@@ -27,6 +29,8 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
     @IBOutlet weak var labelCount0: UILabel!
     @IBOutlet weak var labelCount1: UILabel!
     @IBOutlet weak var labelCount2: UILabel!
+    private var externalAccessoryBrowser: EAWiFiUnconfiguredAccessoryBrowser!
+    // private var accessoryBrowser = HMAccessoryBrowser()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,8 +40,19 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: updateState)
         
         UIApplication.shared.isIdleTimerDisabled = true
+        
+        // NEHotspotConfigurationManager.shared.getConfiguredSSIDs()
+        
+        // let interfaces = NEHotspotHelper.supportedNetworkInterfaces()
+        // print("--- \(interfaces)")
+        
+        // accessoryBrowser.delegate = self
+        // accessoryBrowser.startSearchingForNewAccessories()
+
+        // externalAccessoryBrowser = EAWiFiUnconfiguredAccessoryBrowser(delegate: self, queue: nil)
+        // externalAccessoryBrowser.startSearchingForUnconfiguredAccessories(matching: nil)
     }
-    
+       
     func updateState(timer: Timer) {
         var devicesArray = Array(devices.values)
         devicesArray.sort(by: {
@@ -90,6 +105,8 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         }
     }
     
+    // MARK: bluetooth
+    
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         print("Central state update")
         if central.state != .poweredOn {
@@ -116,5 +133,24 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         device!.updateDate = NSDate()
         
         lastScannedDate = NSDate()
+    }
+    
+    // MARK: wi-fi
+        
+    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didUpdate state: EAWiFiUnconfiguredAccessoryBrowserState) {
+        print("wi-fi 1 \(state == .searching ? "wifi searching" : "other")")
+        print("\(browser.unconfiguredAccessories.count)")
+    }
+    
+    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didFindUnconfiguredAccessories accessories: Set<EAWiFiUnconfiguredAccessory>) {
+        print("wi-fi 2")
+    }
+    
+    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didRemoveUnconfiguredAccessories accessories: Set<EAWiFiUnconfiguredAccessory>) {
+        print("wi-fi 3")
+    }
+    
+    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didFinishConfiguringAccessory accessory: EAWiFiUnconfiguredAccessory, with status: EAWiFiUnconfiguredAccessoryConfigurationStatus) {
+        print("wi-fi 4")
     }
 }
