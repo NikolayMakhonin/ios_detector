@@ -14,14 +14,13 @@ class Device {
 import UIKit
 import CoreBluetooth
 import AVFoundation
-// import NetworkExtension
-import ExternalAccessory
 
-class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDelegate, EAWiFiUnconfiguredAccessoryBrowserDelegate {
+class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDelegate {
 
     private var centralManager: CBCentralManager!
     private var devices: [UUID: Device] = [:]
     private var devicesArray: [Device] = []
+    private var devicesArrayDisplay: [Device] = []
     private var devicesArrayLock: Bool = false
     private var lastScannedDate: NSDate = NSDate()
     private var count0: Int = 0
@@ -31,8 +30,6 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
     @IBOutlet weak var labelCount0: UILabel!
     @IBOutlet weak var labelCount1: UILabel!
     @IBOutlet weak var labelCount2: UILabel!
-    private var externalAccessoryBrowser: EAWiFiUnconfiguredAccessoryBrowser!
-    // private var accessoryBrowser = HMAccessoryBrowser()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,45 +45,36 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.labelState_doubleTap))
         doubleTap.numberOfTapsRequired = 2
         labelState.addGestureRecognizer(doubleTap)
-
-        
-        // NEHotspotConfigurationManager.shared.getConfiguredSSIDs()
-        
-        // let interfaces = NEHotspotHelper.supportedNetworkInterfaces()
-        // print("--- \(interfaces)")
-        
-        // accessoryBrowser.delegate = self
-        // accessoryBrowser.startSearchingForNewAccessories()
-
-        // externalAccessoryBrowser = EAWiFiUnconfiguredAccessoryBrowser(delegate: self, queue: nil)
-        // externalAccessoryBrowser.startSearchingForUnconfiguredAccessories(matching: nil)
     }
     
     @objc func labelState_doubleTap() {
         devicesArrayLock = !devicesArrayLock
         print("devicesArrayLock = \(devicesArrayLock)")
+        updateState(timer: nil)
     }
        
-    func updateState(timer: Timer) {
-        if (!devicesArrayLock) {
-            devicesArray = Array(devices.values)
-            devicesArray.sort(by: {
-                if (-$0.updateDate.timeIntervalSinceNow > 10) {
-                    if (-$1.updateDate.timeIntervalSinceNow > 10) {
-                        return -$0.updateDate.timeIntervalSinceNow < -$1.updateDate.timeIntervalSinceNow
-                    }
-                    return false
-                }
+    func updateState(timer: Timer?) {
+        devicesArray = Array(devices.values)
+        devicesArray.sort(by: {
+            if (-$0.updateDate.timeIntervalSinceNow > 10) {
                 if (-$1.updateDate.timeIntervalSinceNow > 10) {
-                    return true
+                    return -$0.updateDate.timeIntervalSinceNow < -$1.updateDate.timeIntervalSinceNow
                 }
-                return Double(truncating: $0.rssi) > Double(truncating: $1.rssi)
-            })
+                return false
+            }
+            if (-$1.updateDate.timeIntervalSinceNow > 10) {
+                return true
+            }
+            return Double(truncating: $0.rssi) > Double(truncating: $1.rssi)
+        })
+        
+        if (!devicesArrayLock) {
+            devicesArrayDisplay = Array(devicesArray
+                .filter({ -$0.updateDate.timeIntervalSinceNow < 60 * 60 })
+                .prefix(50))
         }
         
-        let devicesStr = devicesArray
-            .prefix(50)
-            .filter({ -$0.updateDate.timeIntervalSinceNow < 60 * 60 })
+        let devicesStr = devicesArrayDisplay
             .map({ "\($0.rssi ?? 0) | \(Int(-$0.updateDate.timeIntervalSinceNow)) | \($0.peripheral.name ?? "\($0.peripheral.identifier)")"})
             .joined(separator: "\n")
         
@@ -145,28 +133,9 @@ class ViewController: UIViewController, CBPeripheralDelegate, CBCentralManagerDe
         }
         
         device!.peripheral = peripheral
-        device!.rssi = RSSI
+        device!.rssi = RSSI == 127 ? -128 : RSSI
         device!.updateDate = NSDate()
         
         lastScannedDate = NSDate()
-    }
-    
-    // MARK: wi-fi
-        
-    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didUpdate state: EAWiFiUnconfiguredAccessoryBrowserState) {
-        print("wi-fi 1 \(state == .searching ? "wifi searching" : "other")")
-        print("\(browser.unconfiguredAccessories.count)")
-    }
-    
-    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didFindUnconfiguredAccessories accessories: Set<EAWiFiUnconfiguredAccessory>) {
-        print("wi-fi 2")
-    }
-    
-    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didRemoveUnconfiguredAccessories accessories: Set<EAWiFiUnconfiguredAccessory>) {
-        print("wi-fi 3")
-    }
-    
-    func accessoryBrowser(_ browser: EAWiFiUnconfiguredAccessoryBrowser, didFinishConfiguringAccessory accessory: EAWiFiUnconfiguredAccessory, with status: EAWiFiUnconfiguredAccessoryConfigurationStatus) {
-        print("wi-fi 4")
     }
 }
